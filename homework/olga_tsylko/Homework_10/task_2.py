@@ -20,7 +20,7 @@ def repeat_me_2(count=1):
     def decorator(func):
         def wrapper(*args):
             result = None
-            for i in range(count):
+            for _ in range(count):
                 result = func(*args)
             return result
 
