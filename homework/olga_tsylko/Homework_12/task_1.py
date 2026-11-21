@@ -1,4 +1,4 @@
-class Flowers():
+class Flowers:
     def __init__(self, name, color, stem_len, freshness, price, life_time):
         self.name = name
         self.color = color
@@ -7,7 +7,7 @@ class Flowers():
         self.price = price
         self.life_time = life_time
 
-    def __str__(self) -> str:
+    def __str__(self):
         return (
             f"{self.name}, {self.color}, свежесть: {self.freshness}, "
             f"стебель: {self.stem_len} м, цена: {self.price} руб., время жизни: {self.life_time}"
@@ -45,38 +45,24 @@ class Bouquet:
         bouquet_life = common_life_time / len(self.flowers)
         return round(bouquet_life, 1)
 
-    def sort_by_color(self, reverse=False):
+    def sort_by(self, key, reverse=False):
         self.flowers.sort(
-            key=lambda flower: flower.color.lower(), reverse=reverse
-        )
-
-    def sort_by_stem_len(self, reverse=False):
-        self.flowers.sort(
-            key=lambda flower: flower.stem_len, reverse=reverse
-        )
-
-    def sort_by_price(self, reverse=False):
-        self.flowers.sort(
-            key=lambda flower: flower.price, reverse=reverse
+            key=lambda flower: getattr(flower, key), reverse=reverse
         )
 
     def find_by_color(self, color):
         flowers_by_color = []
         for flower in self.flowers:
             if flower.color.lower() == color.lower():
-                flowers_by_color.append(str(flower))
-        if not flowers_by_color:
-            return f"Цвет '{color}' не найден."
-        return "\n".join(flowers_by_color)
+                flowers_by_color.append(flower)
+        return flowers_by_color
 
     def find_by_life_time(self, life_time):
         flowers_by_life_time = []
         for flower in self.flowers:
             if flower.life_time == life_time:
-                flowers_by_life_time.append(str(flower))
-        if not flowers_by_life_time:
-            return f"Нет цветов с продолжительностью жизни {life_time}"
-        return "\n".join(flowers_by_life_time)
+                flowers_by_life_time.append(flower)
+        return flowers_by_life_time
 
     def __str__(self):
         if not self.flowers:
@@ -101,14 +87,24 @@ print(bouquet.bouquet_price())
 print(bouquet.vase_life())
 print("*** До сортировки ***")
 print(bouquet)
-bouquet.sort_by_color()
 print("*** После сортировки по цвету ***")
+bouquet.sort_by("color")
 print(bouquet)
-bouquet.sort_by_stem_len()
 print("*** После сортировки по длине стебля ***")
+bouquet.sort_by("stem_len")
 print(bouquet)
-bouquet.sort_by_price(reverse=True)
 print("*** После сортировки по цене ***")
+bouquet.sort_by("price", reverse=True)
 print(bouquet)
-print('Поиск цветов по определенному цвету: ', bouquet.find_by_color('white'))
-print('Поиск цветов по продолжительности жизни: ', bouquet.find_by_life_time(5.5))
+print("*** Поиск по цвету ***")
+found_flowers_by_color = bouquet.find_by_color("white")
+if not found_flowers_by_color:
+    print("Цветы не найдены")
+else:
+    print(*found_flowers_by_color, sep="\n")
+print("*** Поиск по продолжительности жизни ***")
+found_flowers_by_life_time = bouquet.find_by_life_time(5.5)
+if not found_flowers_by_life_time:
+    print("Цветы не найдены")
+else:
+    print(*found_flowers_by_life_time, sep="\n")
