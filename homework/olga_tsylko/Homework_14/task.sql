@@ -1,4 +1,4 @@
-INSERT INTO students (name, second_name, group_id) VALUES ('Vladislav', 'Ivanov', 1)
+INSERT INTO students (name, second_name, group_id) VALUES ('Vladislav', 'Ivanov', NULL)
 INSERT INTO books (title, taken_by_student_id) VALUES ('ИИ для чайников', 100003)
 INSERT INTO books (title, taken_by_student_id) VALUES ('Кибербезопасность', 100003)
 INSERT INTO `groups`(title, start_date, end_date) VALUES ('Программирование на Python', 'nov 2026', 'dec 2026')
