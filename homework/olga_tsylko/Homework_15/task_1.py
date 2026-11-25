@@ -25,6 +25,15 @@ def insert_and_get(cursor, db, table_name, columns, values):
     return record
 
 
+def insert_many(cursor, db, table_name, columns, rows):
+    columns_str = ", ".join(columns)
+    placeholders = ", ".join(["%s"] * len(columns))
+    query = f"INSERT INTO `{table_name}` ({columns_str}) VALUES ({placeholders})"
+    cursor.executemany(query, rows)
+    db.commit()
+    print(f"Добавлено в {table_name} ({cursor.rowcount} шт.):", rows)
+
+
 def select_and_show(cursor, query, params=None):
     cursor.execute(query, params or ())
     records = cursor.fetchall()
@@ -41,12 +50,16 @@ student = insert_and_get(
 )
 student_id = student["id"]
 
-book_1 = insert_and_get(
-    cursor, db, "books", ["title", "taken_by_student_id"], ('ИИ для всех', student_id)
+insert_many(
+    cursor, db,
+    "books",
+    ["title", "taken_by_student_id"],
+    [
+        ('ИИ для всех: I часть', student_id),
+        ('Cybersafety 4', student_id)
+    ]
 )
-book_2 = insert_and_get(
-    cursor, db, "books", ["title", "taken_by_student_id"], ('Cybersafety 3', student_id)
-)
+
 new_group = insert_and_get(
     cursor, db,
     "groups",
@@ -92,19 +105,17 @@ lesson_4 = insert_and_get(
 )
 lesson_4_id = lesson_4["id"]
 
-mark_1 = insert_and_get(
-    cursor, db, "marks", ["value", "lesson_id", "student_id"], (9, lesson_1_id, student_id)
+insert_many(
+    cursor, db,
+    "marks",
+    ["value", "lesson_id", "student_id"],
+    [
+        (9, lesson_1_id, student_id),
+        (7, lesson_2_id, student_id),
+        (8, lesson_3_id, student_id),
+        (10, lesson_4_id, student_id)
+    ]
 )
-mark_2 = insert_and_get(
-    cursor, db, "marks", ["value", "lesson_id", "student_id"], (7, lesson_2_id, student_id)
-)
-mark_3 = insert_and_get(
-    cursor, db, "marks", ["value", "lesson_id", "student_id"], (8, lesson_3_id, student_id)
-)
-mark_4 = insert_and_get(
-    cursor, db, "marks", ["value", "lesson_id", "student_id"], (10, lesson_4_id, student_id)
-)
-
 marks = select_and_show(
     cursor,
     "SELECT `value` AS marks FROM marks WHERE student_id = %s",
